@@ -104,7 +104,7 @@ func (c *Configuration) renderResources(ch *chart.Chart, values chartutil.Values
 	hs := []*release.Hook{}
 	b := bytes.NewBuffer(nil)
 
-	caps, err := c.getCapabilities()
+	caps, err := c.GetCapabilities()
 	if err != nil {
 		return hs, b, "", err
 	}
@@ -234,7 +234,7 @@ type RESTClientGetter interface {
 type DebugLog func(format string, v ...interface{})
 
 // capabilities builds a Capabilities from discovery information.
-func (c *Configuration) getCapabilities() (*chartutil.Capabilities, error) {
+func (c *Configuration) GetCapabilities() (*chartutil.Capabilities, error) {
 	if c.Capabilities != nil {
 		return c.Capabilities, nil
 	}
