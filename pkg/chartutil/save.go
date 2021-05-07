@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"time"
 
 	"github.com/pkg/errors"
@@ -128,6 +129,7 @@ func Save(c *chart.Chart, outDir string) (string, error) {
 	zipper := gzip.NewWriter(f)
 	zipper.Header.Extra = headerBytes
 	zipper.Header.Comment = "Helm"
+	zipper.Header.ModTime = time.Time{}
 
 	// Wrap in tar writer
 	twriter := tar.NewWriter(zipper)
@@ -203,6 +205,9 @@ func writeTarContents(out *tar.Writer, c *chart.Chart, prefix string) error {
 	}
 
 	// Save templates
+	sort.Slice(c.Templates, func(i, j int) bool {
+		return c.Templates[i].Name < c.Templates[j].Name
+	})
 	for _, f := range c.Templates {
 		n := filepath.Join(base, f.Name)
 		if err := writeToTar(out, n, f.Data); err != nil {
@@ -211,6 +216,9 @@ func writeTarContents(out *tar.Writer, c *chart.Chart, prefix string) error {
 	}
 
 	// Save files
+	sort.Slice(c.Files, func(i, j int) bool {
+		return c.Files[i].Name < c.Files[j].Name
+	})
 	for _, f := range c.Files {
 		n := filepath.Join(base, f.Name)
 		if err := writeToTar(out, n, f.Data); err != nil {
@@ -234,7 +242,7 @@ func writeToTar(out *tar.Writer, name string, body []byte) error {
 		Name:    filepath.ToSlash(name),
 		Mode:    0644,
 		Size:    int64(len(body)),
-		ModTime: time.Now(),
+		ModTime: time.Time{},
 	}
 	if err := out.WriteHeader(h); err != nil {
 		return err
