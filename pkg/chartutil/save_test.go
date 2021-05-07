@@ -122,13 +122,12 @@ func Indent(n int, text string) string {
 	return startOfLine.ReplaceAllLiteralString(text, indentation)
 }
 
-func TestSavePreservesTimestamps(t *testing.T) {
-	// Test executes so quickly that if we don't subtract a second, the
-	// check will fail because `initialCreateTime` will be identical to the
-	// written timestamp for the files.
-	initialCreateTime := time.Now().Add(-1 * time.Second)
-
-	tmp := t.TempDir()
+func TestSaveZerosOutTimestamps(t *testing.T) {
+	tmp, err := ioutil.TempDir("", "helm-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(tmp)
 
 	c := &chart.Chart{
 		Metadata: &chart.Metadata{
@@ -157,8 +156,8 @@ func TestSavePreservesTimestamps(t *testing.T) {
 	}
 
 	for _, header := range allHeaders {
-		if header.ModTime.Before(initialCreateTime) {
-			t.Fatalf("File timestamp not preserved: %v", header.ModTime)
+		if header.ModTime != time.Unix(0, 0) {
+			t.Fatalf("File %s timestamp is not zero", header.Name)
 		}
 	}
 }
