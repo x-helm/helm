@@ -68,10 +68,13 @@ func (e Engine) Render(chrt *chart.Chart, values chartutil.Values) (map[string]s
 	return e.render(tmap)
 }
 
-func (e Engine) RenderTemplates(chrt *chart.Chart, values chartutil.Values, tpls map[string]string) (map[string]string, error) {
-	tmap := allPartialTemplates(chrt, values)
-	templates := prepareTpls(chrt, tpls, values)
-	return e.renderWithReferences(templates, tmap)
+func (e Engine) NewInstance(chrt *chart.Chart, values chartutil.Values) EngineInstance {
+	return EngineInstance{
+		chrt:          chrt,
+		values:        values,
+		referenceTpls: allPartialTemplates(chrt, values),
+		e:             e,
+	}
 }
 
 // Render takes a chart, optional values, and value overrides, and attempts to
@@ -457,4 +460,16 @@ func isTemplateValid(ch *chart.Chart, templateName string) bool {
 // isLibraryChart returns true if the chart is a library chart
 func isLibraryChart(c *chart.Chart) bool {
 	return strings.EqualFold(c.Metadata.Type, "library")
+}
+
+type EngineInstance struct {
+	chrt          *chart.Chart
+	values        chartutil.Values
+	referenceTpls map[string]renderable
+	e             Engine
+}
+
+func (ei EngineInstance) Render(tpls map[string]string) (map[string]string, error) {
+	templates := prepareTpls(ei.chrt, tpls, ei.values)
+	return ei.e.renderWithReferences(templates, ei.referenceTpls)
 }
