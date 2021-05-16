@@ -259,7 +259,7 @@ func (u *Upgrade) performUpgrade(originalRelease, upgradedRelease *release.Relea
 	}
 
 	// It is safe to use force only on target because these are resources currently rendered by the chart.
-	err = target.Visit(setMetadataVisitor(upgradedRelease.Name, upgradedRelease.Namespace, true))
+	err = target.Visit(setMetadataVisitor(upgradedRelease.Name, upgradedRelease.Namespace, getAppLabels(upgradedRelease, u.cfg), true))
 	if err != nil {
 		return upgradedRelease, err
 	}
