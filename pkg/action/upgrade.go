@@ -259,11 +259,11 @@ func (u *Upgrade) performUpgrade(originalRelease, upgradedRelease *release.Relea
 	}
 
 	// It is safe to use force only on target because these are resources currently rendered by the chart.
-	appLabels, err := getAppLabels(upgradedRelease, u.cfg)
+	appLabels, err := GetAppLabels(upgradedRelease, u.cfg)
 	if err != nil {
 		return nil, err
 	}
-	err = target.Visit(setMetadataVisitor(upgradedRelease.Name, upgradedRelease.Namespace, appLabels, true))
+	err = target.Visit(SetMetadataVisitor(upgradedRelease.Name, upgradedRelease.Namespace, appLabels, true))
 	if err != nil {
 		return upgradedRelease, err
 	}
@@ -281,7 +281,7 @@ func (u *Upgrade) performUpgrade(originalRelease, upgradedRelease *release.Relea
 		}
 	}
 
-	toBeUpdated, err := existingResourceConflict(toBeCreated, upgradedRelease.Name, upgradedRelease.Namespace)
+	toBeUpdated, err := ExistingResourceConflict(toBeCreated, upgradedRelease.Name, upgradedRelease.Namespace)
 	if err != nil {
 		return nil, errors.Wrap(err, "rendered manifests contain a resource that already exists. Unable to continue with update")
 	}

@@ -264,11 +264,11 @@ func (i *Install) Run(chrt *chart.Chart, vals map[string]interface{}) (*release.
 	}
 
 	// It is safe to use "force" here because these are resources currently rendered by the chart.
-	appLabels, err := getAppLabels(rel, i.cfg)
+	appLabels, err := GetAppLabels(rel, i.cfg)
 	if err != nil {
 		return nil, err
 	}
-	err = resources.Visit(setMetadataVisitor(rel.Name, rel.Namespace, appLabels, true))
+	err = resources.Visit(SetMetadataVisitor(rel.Name, rel.Namespace, appLabels, true))
 	if err != nil {
 		return nil, err
 	}
@@ -280,7 +280,7 @@ func (i *Install) Run(chrt *chart.Chart, vals map[string]interface{}) (*release.
 	// deleting the release because the manifest will be pointing at that
 	// resource
 	if !i.ClientOnly && !isUpgrade && len(resources) > 0 {
-		toBeAdopted, err = existingResourceConflict(resources, rel.Name, rel.Namespace)
+		toBeAdopted, err = ExistingResourceConflict(resources, rel.Name, rel.Namespace)
 		if err != nil {
 			return nil, errors.Wrap(err, "rendered manifests contain a resource that already exists. Unable to continue with install")
 		}

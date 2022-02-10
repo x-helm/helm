@@ -44,7 +44,7 @@ const (
 	helmReleaseNamespaceAnnotation = "meta.helm.sh/release-namespace"
 )
 
-func existingResourceConflict(resources kube.ResourceList, releaseName, releaseNamespace string) (kube.ResourceList, error) {
+func ExistingResourceConflict(resources kube.ResourceList, releaseName, releaseNamespace string) (kube.ResourceList, error) {
 	var requireUpdate kube.ResourceList
 
 	err := resources.Visit(func(info *resource.Info, err error) error {
@@ -118,10 +118,10 @@ func requireValue(meta map[string]string, k, v string) error {
 	return nil
 }
 
-// setMetadataVisitor adds release tracking metadata to all resources. If force is enabled, existing
+// SetMetadataVisitor adds release tracking metadata to all resources. If force is enabled, existing
 // ownership metadata will be overwritten. Otherwise an error will be returned if any resource has an
 // existing and conflicting value for the managed by label or Helm release/namespace annotations.
-func setMetadataVisitor(releaseName, releaseNamespace string, extraLabels map[string]string, force bool) resource.VisitorFunc {
+func SetMetadataVisitor(releaseName, releaseNamespace string, extraLabels map[string]string, force bool) resource.VisitorFunc {
 	return func(info *resource.Info, err error) error {
 		if err != nil {
 			return err
@@ -196,7 +196,7 @@ func mergeStrStrMaps(current, desired map[string]string) map[string]string {
 }
 
 // special handling for appscode / kubepack specific case
-func getAppLabels(rel *release.Release, cfg *Configuration) (map[string]string, error) {
+func GetAppLabels(rel *release.Release, cfg *Configuration) (map[string]string, error) {
 	result := map[string]string{}
 	// check storage driver name
 	if cfg.Releases.Name() == "storage.x-helm.dev/apps" {

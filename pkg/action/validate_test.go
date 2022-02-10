@@ -100,24 +100,24 @@ func TestSetMetadataVisitor(t *testing.T) {
 	)
 
 	// Set release tracking metadata and verify no error
-	err = resources.Visit(setMetadataVisitor("rel-a", "ns-a", nil, true))
+	err = resources.Visit(SetMetadataVisitor("rel-a", "ns-a", nil, true))
 	assert.NoError(t, err)
 
 	// Verify that release "b" cannot take ownership of "a"
-	err = resources.Visit(setMetadataVisitor("rel-b", "ns-a", nil, false))
+	err = resources.Visit(SetMetadataVisitor("rel-b", "ns-a", nil, false))
 	assert.Error(t, err)
 
 	// Force release "b" to take ownership
-	err = resources.Visit(setMetadataVisitor("rel-b", "ns-a", nil, true))
+	err = resources.Visit(SetMetadataVisitor("rel-b", "ns-a", nil, true))
 	assert.NoError(t, err)
 
 	// Check that there is now no ownership error when setting metadata without force
-	err = resources.Visit(setMetadataVisitor("rel-b", "ns-a", nil, false))
+	err = resources.Visit(SetMetadataVisitor("rel-b", "ns-a", nil, false))
 	assert.NoError(t, err)
 
 	// Add a new resource that is missing ownership metadata and verify error
 	resources.Append(newDeploymentResource("baz", "default"))
-	err = resources.Visit(setMetadataVisitor("rel-b", "ns-a", nil, false))
+	err = resources.Visit(SetMetadataVisitor("rel-b", "ns-a", nil, false))
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), `Deployment "baz" in namespace "" cannot be owned`)
 }
