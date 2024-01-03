@@ -184,7 +184,7 @@ func (i *Install) installCRDs(crds []chart.CRD) error {
 		// If we have already gathered the capabilities, we need to invalidate
 		// the cache so that the new CRDs are recognized. This should only be
 		// the case when an action configuration is reused for multiple actions,
-		// as otherwise it is later loaded by ourselves when getCapabilities
+		// as otherwise it is later loaded by ourselves when GetCapabilities
 		// is called later on in the installation process.
 		if i.cfg.Capabilities != nil {
 			discoveryClient, err := i.cfg.RESTClientGetter.ToDiscoveryClient()
@@ -283,7 +283,7 @@ func (i *Install) RunWithContext(ctx context.Context, chrt *chart.Chart, vals ma
 	// the user doesn't have to specify both
 	i.Wait = i.Wait || i.Atomic
 
-	caps, err := i.cfg.getCapabilities()
+	caps, err := i.cfg.GetCapabilities()
 	if err != nil {
 		return nil, err
 	}
