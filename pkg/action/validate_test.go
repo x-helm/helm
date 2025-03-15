@@ -152,14 +152,14 @@ func TestExistingResourceConflict(t *testing.T) {
 	)
 
 	// Verify only existing resources are returned
-	found, err := existingResourceConflict(resources, releaseName, releaseNamespace)
+	found, err := existingResourceConflict(resources, releaseName, releaseNamespace, false)
 	assert.NoError(t, err)
 	assert.Len(t, found, 1)
 	assert.Equal(t, found[0], existing)
 
 	// Verify that an existing resource that lacks labels/annotations results in an error
 	resources = append(resources, conflict)
-	_, err = existingResourceConflict(resources, releaseName, releaseNamespace)
+	_, err = existingResourceConflict(resources, releaseName, releaseNamespace, false)
 	assert.Error(t, err)
 }
 

@@ -355,7 +355,7 @@ func (i *Install) RunWithContext(ctx context.Context, chrt *chart.Chart, vals ma
 		if i.TakeOwnership {
 			toBeAdopted, err = requireAdoption(resources)
 		} else {
-			toBeAdopted, err = existingResourceConflict(resources, rel.Name, rel.Namespace)
+			toBeAdopted, err = existingResourceConflict(resources, rel.Name, rel.Namespace, isEditorChart(rel.Chart))
 		}
 		if err != nil {
 			return nil, errors.Wrap(err, "Unable to continue with install")
