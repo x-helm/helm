@@ -351,7 +351,7 @@ func (u *Upgrade) performUpgrade(ctx context.Context, originalRelease, upgradedR
 	if u.TakeOwnership {
 		toBeUpdated, err = requireAdoption(toBeCreated)
 	} else {
-		toBeUpdated, err = existingResourceConflict(toBeCreated, upgradedRelease.Name, upgradedRelease.Namespace)
+		toBeUpdated, err = existingResourceConflict(toBeCreated, upgradedRelease.Name, upgradedRelease.Namespace, isEditorChart(upgradedRelease.Chart))
 	}
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to continue with update")
