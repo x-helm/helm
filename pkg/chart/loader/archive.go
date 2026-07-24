@@ -40,7 +40,7 @@ var MaxDecompressedChartSize int64 = 100 * 1024 * 1024 // Default 100 MiB
 
 // MaxDecompressedFileSize is the size of the largest file that Helm will attempt to load.
 // The size of the file is the decompressed version of it when it is stored in an archive.
-var MaxDecompressedFileSize int64 = 5 * 1024 * 1024 // Default 5 MiB
+var MaxDecompressedFileSize int64 = 10 * 1024 * 1024 // Default 10 MiB
 
 var drivePathPattern = regexp.MustCompile(`^[a-zA-Z]:/`)
 
